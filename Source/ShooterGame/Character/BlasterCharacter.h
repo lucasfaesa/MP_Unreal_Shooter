@@ -25,6 +25,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void MoveVertical(float Value);
+	void MoveHorizontal(float Value);
+	void Turn(float Value);
+	void LookUp(float Value);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* CameraBoom;
