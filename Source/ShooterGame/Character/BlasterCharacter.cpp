@@ -4,6 +4,7 @@
 #include "BlasterCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -12,14 +13,33 @@ ABlasterCharacter::ABlasterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Unity Equivalent: `CameraBoom = new GameObject("CameraBoom").AddComponent<SpringArm>();`
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	// Unity Equivalent: `CameraBoom.transform.parent = this.transform;`
 	CameraBoom->SetupAttachment(GetMesh());
+	// Unity Equivalent: `CameraBoom.targetDistance = 600f;` (or similar depending on the implementation)
 	CameraBoom->TargetArmLength = 600.f;
+	// Unity Equivalent: `CameraBoom.useFollowRotation = true;`
 	CameraBoom->bUsePawnControlRotation = true;
 
+	// Unity Equivalent: `FollowCamera = new GameObject("FollowCamera").AddComponent<Camera>();`
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	// Unity Equivalent: `FollowCamera.transform.parent = CameraBoom.transform;`
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Unity Equivalent: `FollowCamera.useFollowRotation = false;`
 	FollowCamera->bUsePawnControlRotation = false;
+
+	/*This property determines whether the character should rotate based on the controller's yaw
+	 *(horizontal rotation). Setting it to false means that the character's yaw rotation is not
+	 *controlled by the player's input. Instead, it will be controlled by other means, such as
+	 *animations or manual adjustments in code.*/
+	bUseControllerRotationYaw = false;
+
+	/*When bOrientRotationToMovement is true, the character will
+	 *automatically rotate to face the direction of movement.
+	 *This makes the character’s rotation align with their movement
+	 *direction, which is typically used for a more natural movement appearance.*/
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
